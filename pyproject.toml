@@ -1,0 +1,15 @@
+[project]
+name = "poly-query-mcp"
+version = "0.1.0"
+description = "MCP tool for connecting to MySQL, PostgreSQL, Redis and MongoDB databases"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "mcp>=1.0.0",
+    "pymysql>=1.1.0",
+    "psycopg2-binary>=2.9.9",
+    "redis>=5.0.1",
+    "pymongo>=4.6.0",
+    "pydantic>=2.5.0",
+    "python-dotenv>=1.0.0"
+]
