@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "poly-query-mcp-local": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "/Users/hqzqaq/project/python/poly_query_mcp",
+        "poly-query-mcp",
+        "--config",
+        "/Users/hqzqaq/project/python/poly_query_mcp/config.enhanced.json",
+        "--profile",
+        "local"
+      ]
+    }
+  }
+}
