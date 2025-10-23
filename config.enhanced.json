@@ -13,7 +13,8 @@
         "port": 5432,
         "user": "postgres",
         "password": "dev_postgresql_password",
-        "database": "dev_db"
+        "database": "dev_db",
+        "schema": "public"
       },
       "redis": {
         "host": "localhost",
@@ -42,7 +43,8 @@
         "port": 5432,
         "user": "app_user",
         "password": "${POSTGRESQL_PROD_PASSWORD}",
-        "database": "production_db"
+        "database": "production_db",
+        "schema": "public"
       },
       "redis": {
         "host": "prod-redis.example.com",
