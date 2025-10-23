@@ -19,8 +19,11 @@
         "--redis-host", "localhost",
         "--redis-port", "6379",
         "--redis-db", "0",
+        "--redis-password", "redis_password",
         "--mongodb-host", "localhost",
         "--mongodb-port", "27017",
+        "--mongodb-username", "dev_user",
+        "--mongodb-password", "dev_mongodb_password",
         "--mongodb-database", "test"
       ]
     }

@@ -18,17 +18,21 @@ class PostgreSQLConnection(DatabaseConnection):
     def connect(self) -> bool:
         """连接PostgreSQL数据库"""
         try:
+            # 获取schema，默认为public
+            schema = self.config.get("schema", "public")
+            
             self.connection = psycopg2.connect(
                 host=self.config.get("host"),
                 port=self.config.get("port", 5432),
-                user=self.config.get("username"),
+                user=self.config.get("user"),  # 使用user而不是username
                 password=self.config.get("password"),
                 database=self.config.get("database"),
-                cursor_factory=psycopg2.extras.RealDictCursor
+                cursor_factory=psycopg2.extras.RealDictCursor,
+                options=f"-csearch_path={schema}"
             )
             self.connection.autocommit = True
             self.is_connected = True
-            logger.info(f"成功连接到PostgreSQL数据库: {self.config.get('host')}:{self.config.get('port')}")
+            logger.info(f"成功连接到PostgreSQL数据库: {self.config.get('host')}:{self.config.get('port')} (schema: {schema})")
             return True
         except Exception as e:
             logger.error(f"连接PostgreSQL数据库失败: {str(e)}")

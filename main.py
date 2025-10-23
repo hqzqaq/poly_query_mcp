@@ -37,6 +37,7 @@ Poly Query MCP - 多数据库查询MCP工具
   --postgresql-user USER         PostgreSQL用户名
   --postgresql-password PASS     PostgreSQL密码
   --postgresql-database DB       PostgreSQL数据库名
+  --postgresql-schema SCHEMA     PostgreSQL模式名(默认为public)
 
   --redis-host HOST              Redis主机地址
   --redis-port PORT              Redis端口
@@ -116,7 +117,8 @@ MCP配置示例:
           "--postgresql-port", "5432",
           "--postgresql-user", "postgre_user",
           "--postgresql-password", "postgre_password",
-          "--postgresql-database", "postgre_database"
+          "--postgresql-database", "postgre_database",
+          "--postgresql-schema", "public"
         ]
       }
     }
