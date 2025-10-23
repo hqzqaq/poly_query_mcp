@@ -21,7 +21,7 @@ class MySQLConnection(DatabaseConnection):
             self.connection = pymysql.connect(
                 host=self.config.get("host"),
                 port=self.config.get("port", 3306),
-                user=self.config.get("username"),
+                user=self.config.get("user") or self.config.get("username"),  # 支持两种字段名
                 password=self.config.get("password"),
                 database=self.config.get("database"),
                 charset=self.config.get("charset", "utf8mb4"),

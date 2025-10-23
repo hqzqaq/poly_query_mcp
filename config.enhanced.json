@@ -1,0 +1,83 @@
+{
+  "environments": {
+    "development": {
+      "mysql": {
+        "host": "localhost",
+        "port": 3306,
+        "user": "root",
+        "password": "dev_mysql_password",
+        "database": "dev_db"
+      },
+      "postgresql": {
+        "host": "localhost",
+        "port": 5432,
+        "user": "postgres",
+        "password": "dev_postgresql_password",
+        "database": "dev_db"
+      },
+      "redis": {
+        "host": "localhost",
+        "port": 6379,
+        "db": 0,
+        "password": "dev_redis_password"
+      },
+      "mongodb": {
+        "host": "localhost",
+        "port": 27017,
+        "username": "dev_user",
+        "password": "dev_mongodb_password",
+        "database": "dev_db"
+      }
+    },
+    "production": {
+      "mysql": {
+        "host": "prod-mysql.example.com",
+        "port": 3306,
+        "user": "app_user",
+        "password": "${MYSQL_PROD_PASSWORD}",
+        "database": "production_db"
+      },
+      "postgresql": {
+        "host": "prod-postgresql.example.com",
+        "port": 5432,
+        "user": "app_user",
+        "password": "${POSTGRESQL_PROD_PASSWORD}",
+        "database": "production_db"
+      },
+      "redis": {
+        "host": "prod-redis.example.com",
+        "port": 6379,
+        "db": 0,
+        "password": "${REDIS_PROD_PASSWORD}"
+      },
+      "mongodb": {
+        "host": "prod-mongodb.example.com",
+        "port": 27017,
+        "username": "app_user",
+        "password": "${MONGODB_PROD_PASSWORD}",
+        "database": "production_db"
+      }
+    }
+  },
+  "profiles": {
+    "local": {
+      "environment": "development",
+      "description": "本地开发环境配置"
+    },
+    "staging": {
+      "environment": "production",
+      "description": "预发布环境配置"
+    },
+    "minimal": {
+      "environment": "development",
+      "databases": ["mysql"],
+      "description": "仅MySQL数据库的轻量级配置"
+    }
+  },
+  "defaults": {
+    "environment": "development",
+    "log_level": "INFO",
+    "connection_pool_size": 5,
+    "connection_timeout": 30
+  }
+}

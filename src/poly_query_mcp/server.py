@@ -27,7 +27,7 @@ from .databases.postgresql_connection import PostgreSQLConnection
 from .databases.redis_connection import RedisConnection
 from .databases.mongodb_connection import MongoDBConnection
 from .utils.config import AppConfig, DatabaseConfig
-from .utils.config_manager import ConfigManager
+from .utils.enhanced_config_manager import EnhancedConfigManager, parse_config_args
 from .utils.logger import setup_logger
 from .utils.exceptions import (
     PolyQueryMCPError,
@@ -54,7 +54,7 @@ server = Server("poly-query-mcp")
 connections: Dict[str, DatabaseConnection] = {}
 
 # 配置管理器
-config_manager = ConfigManager()
+config_manager: Optional[EnhancedConfigManager] = None
 
 
 def get_connection(db_type: str, config: DatabaseConfig) -> DatabaseConnection:
@@ -189,7 +189,10 @@ async def handle_call_tool(name: str, arguments: Dict[str, Any]) -> List[Union[T
     try:
         logger.info(f"调用工具: {name}, 参数: {json.dumps(arguments, ensure_ascii=False)}")
         
-        # 加载配置
+        # 检查配置管理器是否已初始化
+        if config_manager is None:
+            raise ConfigurationError("配置管理器未初始化")
+        
         config = config_manager.get_config()
         
         if name == "query_mysql":
@@ -320,6 +323,36 @@ async def handle_call_tool(name: str, arguments: Dict[str, Any]) -> List[Union[T
 
 async def main():
     """主函数"""
+    # 解析配置参数
+    config_args = parse_config_args()
+    
+    # 打印调试信息
+    print(f"调试信息 - server.py main函数:")
+    print(f"  配置文件: {config_args.get('config_file')}")
+    print(f"  配置文件名称: {config_args.get('profile')}")
+    print(f"  环境: {config_args.get('environment')}")
+    print(f"  数据库列表: {config_args.get('databases')}")
+    print(f"  配置覆盖: {config_args.get('config_overrides')}")
+    
+    # 创建配置管理器
+    global config_manager
+    config_manager = EnhancedConfigManager(config_args.get("config_file"))
+    
+    # 加载配置
+    config_manager.load_config(
+        profile=config_args.get("profile"),
+        environment=config_args.get("environment"),
+        databases=config_args.get("databases"),
+        config_overrides=config_args.get("config_overrides")
+    )
+    
+    # 打印配置信息
+    config = config_manager.get_config()
+    print(f"配置加载完成:")
+    print(f"  配置类型: {'增强版' if config_manager.is_enhanced_config() else '传统版'}")
+    if hasattr(config, 'mysql') and config.mysql:
+        print(f"  MySQL: {config.mysql.host}:{config.mysql.port}/{config.mysql.database}")
+    
     async with stdio_server() as (read_stream, write_stream):
         await server.run(
             read_stream,
@@ -328,5 +361,10 @@ async def main():
         )
 
 
-if __name__ == "__main__":
+def cli_main():
+    """命令行入口点"""
     asyncio.run(main())
+
+
+if __name__ == "__main__":
+    cli_main()

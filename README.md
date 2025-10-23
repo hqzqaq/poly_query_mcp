@@ -14,6 +14,21 @@ Poly Query MCP 是一个支持多种数据库查询的MCP(Model Context Protocol
 
 ### 安装
 
+#### 使用uv安装（推荐）
+
+```bash
+# 从PyPI安装
+uv add poly-query-mcp
+
+# 或者从GitHub安装
+uv add git+https://github.com/yourusername/poly-query-mcp.git
+
+# 或者使用uvx直接运行
+uvx poly-query-mcp
+```
+
+#### 传统安装方式
+
 1. 克隆仓库
 ```bash
 git clone <repository-url>
@@ -24,6 +39,7 @@ cd poly_query_mcp
 ```bash
 python -m venv .venv
 .venv\Scripts\activate  # Windows
+source .venv/bin/activate  # Linux/Mac
 ```
 
 3. 安装依赖
@@ -44,13 +60,33 @@ cp config.example.json config.json
 
 启动MCP服务器：
 ```bash
+# 使用uvx
+uvx poly-query-mcp
+
+# 或者传统方式
 python main.py
 ```
 
 在Claude Desktop中使用：
-1. 在Claude Desktop的配置文件中添加此MCP服务器
+1. 在Claude Desktop的配置文件中添加此MCP服务器：
+
+```json
+{
+  "mcpServers": {
+    "poly-query-mcp": {
+      "command": "uvx",
+      "args": [
+        "poly-query-mcp"
+      ]
+    }
+  }
+}
+```
+
 2. 重启Claude Desktop
 3. 在对话中使用数据库查询功能
+
+更多安装和配置选项请参考 [uv安装指南](docs/UV_INSTALLATION.md)
 
 ## 支持的数据库
 

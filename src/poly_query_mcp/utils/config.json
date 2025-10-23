@@ -9,18 +9,18 @@
     "user": "root"
   },
   "postgresql": {
-    "host": "localhost",
-    "port": 5432,
-    "username": null,
-    "password": "",
-    "database": "",
-    "user": "postgres"
+    "host": "10.1.203.111",
+    "port": 17700,
+    "username": "jl_dev",
+    "password": "kc4T8Rf0C#rwm0121D",
+    "database": "jl_dev",
+    "user": "jl_dev"
   },
   "redis": {
-    "host": "localhost",
+    "host": "10.12.12.222",
     "port": 6379,
-    "username": null,
-    "password": "",
+    "username": "default",
+    "password": "RePssd_we891",
     "database": null,
     "db": 0
   },
