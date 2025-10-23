@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "poly-query-mcp": {
+      "command": "uvx",
+      "args": [
+        "poly-query-mcp",
+        "--config", "~/.config/poly-query-mcp/config.json"
+      ]
+    }
+  }
+}
