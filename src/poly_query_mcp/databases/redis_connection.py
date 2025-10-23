@@ -70,8 +70,9 @@ class RedisConnection(DatabaseConnection):
                 raise Exception(f"不允许执行命令: {command}，仅允许执行查询相关命令")
             
             # 执行命令
+            command_lower = command.lower()
             if not args:
-                result = getattr(self.connection, command_lower := command.lower())()
+                result = getattr(self.connection, command_lower)()
             else:
                 # 处理SCAN命令的特殊情况
                 if command_upper in ['SCAN', 'SSCAN', 'HSCAN', 'ZSCAN']:
