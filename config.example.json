@@ -11,7 +11,8 @@
     "port": 5432,
     "user": "postgres",
     "password": "your_postgresql_password",
-    "database": "your_postgresql_database"
+    "database": "your_postgresql_database",
+    "schema": "public"
   },
   "redis": {
     "host": "localhost",

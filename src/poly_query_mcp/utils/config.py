@@ -29,6 +29,7 @@ class MySQLConfig(DatabaseConfig):
 class PostgreSQLConfig(DatabaseConfig):
     """PostgreSQL数据库配置"""
     port: int = Field(5432, description="PostgreSQL默认端口")
+    schema: Optional[str] = Field("public", description="PostgreSQL schema名称，默认为public")
 
 
 class RedisConfig(DatabaseConfig):

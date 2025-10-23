@@ -114,6 +114,49 @@ Poly Query MCP提供了以下工具：
 | query | string | 是 | SQL查询语句 |
 | params | object | 否 | 查询参数字典，用于参数化查询 |
 
+### 配置参数
+
+除了查询参数外，PostgreSQL连接还支持以下配置参数：
+
+| 参数名 | 类型 | 默认值 | 描述 |
+|--------|------|--------|------|
+| host | string | localhost | 数据库主机地址 |
+| port | integer | 5432 | 数据库端口 |
+| database | string | - | 数据库名称 |
+| username | string | - | 用户名 |
+| password | string | - | 密码 |
+| schema | string | public | 数据库模式名称 |
+
+#### Schema配置说明
+
+PostgreSQL支持多个schema（模式），默认使用public schema。您可以通过以下方式指定schema：
+
+1. **配置文件**：
+```json
+{
+  "postgresql": {
+    "host": "localhost",
+    "port": 5432,
+    "database": "mydb",
+    "username": "user",
+    "password": "pass",
+    "schema": "custom_schema"
+  }
+}
+```
+
+2. **命令行参数**：
+```bash
+python main.py --postgresql-schema custom_schema
+```
+
+3. **环境变量**：
+```bash
+export POSTGRESQL_SCHEMA=custom_schema
+```
+
+当指定schema后，所有查询将默认在该schema中执行，无需在SQL语句中显式指定schema名称。
+
 ### 示例
 
 #### 基本查询

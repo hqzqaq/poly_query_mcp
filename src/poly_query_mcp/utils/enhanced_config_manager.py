@@ -225,7 +225,8 @@ class EnhancedConfigManager:
                 "port": int(os.getenv("POSTGRESQL_PORT", "5432")),
                 "user": os.getenv("POSTGRESQL_USER", "postgres"),
                 "password": os.getenv("POSTGRESQL_PASSWORD", ""),
-                "database": os.getenv("POSTGRESQL_DATABASE", "")
+                "database": os.getenv("POSTGRESQL_DATABASE", ""),
+                "schema": os.getenv("POSTGRESQL_SCHEMA", "public")
             },
             redis={
                 "host": os.getenv("REDIS_HOST", "localhost"),
@@ -256,12 +257,13 @@ class EnhancedConfigManager:
                             "database": "dev_db"
                         },
                         "postgresql": {
-                            "host": "localhost",
-                            "port": 5432,
-                            "user": "postgres",
-                            "password": "dev_postgresql_password",
-                            "database": "dev_db"
-                        },
+                        "host": "localhost",
+                        "port": 5432,
+                        "user": "postgres",
+                        "password": "dev_postgresql_password",
+                        "database": "dev_db",
+                        "schema": "public"
+                    },
                         "redis": {
                             "host": "localhost",
                             "port": 6379,
@@ -285,12 +287,13 @@ class EnhancedConfigManager:
                             "database": "production_db"
                         },
                         "postgresql": {
-                            "host": "prod-postgresql.example.com",
-                            "port": 5432,
-                            "user": "app_user",
-                            "password": "${POSTGRESQL_PROD_PASSWORD}",
-                            "database": "production_db"
-                        },
+                        "host": "prod-postgresql.example.com",
+                        "port": 5432,
+                        "user": "app_user",
+                        "password": "${POSTGRESQL_PROD_PASSWORD}",
+                        "database": "production_db",
+                        "schema": "public"
+                    },
                         "redis": {
                             "host": "prod-redis.example.com",
                             "port": 6379,
@@ -365,6 +368,7 @@ def parse_config_args(args: Optional[List[str]] = None) -> Dict[str, Any]:
     parser.add_argument('--postgresql-user', type=str, help='PostgreSQL用户名')
     parser.add_argument('--postgresql-password', type=str, help='PostgreSQL密码')
     parser.add_argument('--postgresql-database', type=str, help='PostgreSQL数据库名')
+    parser.add_argument('--postgresql-schema', type=str, help='PostgreSQL模式名')
     
     parser.add_argument('--redis-host', type=str, help='Redis主机地址')
     parser.add_argument('--redis-port', type=int, help='Redis端口')
@@ -422,6 +426,8 @@ def parse_config_args(args: Optional[List[str]] = None) -> Dict[str, Any]:
         postgresql_overrides["password"] = parsed_args.postgresql_password
     if parsed_args.postgresql_database:
         postgresql_overrides["database"] = parsed_args.postgresql_database
+    if parsed_args.postgresql_schema:
+        postgresql_overrides["schema"] = parsed_args.postgresql_schema
     
     if postgresql_overrides:
         config_overrides["postgresql"] = postgresql_overrides
