@@ -1,6 +1,6 @@
 [project]
 name = "poly-query-mcp"
-version = "0.1.0"
+version = "v0.1.0.5"
 description = "MCP tool for connecting to MySQL, PostgreSQL, Redis and MongoDB databases"
 readme = "README.md"
 requires-python = ">=3.12"
