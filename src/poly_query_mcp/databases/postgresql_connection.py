@@ -62,7 +62,7 @@ class PostgreSQLConnection(DatabaseConnection):
             with self.connection.cursor() as cursor:
                 # 检查是否是SELECT查询
                 query_upper = query.strip().upper()
-                if query_upper.startswith("SELECT") or query_upper.startswith("SHOW") or query_upper.startswith("DESCRIBE") or query_upper.startswith("EXPLAIN") or query_upper.startswith("\\d"):
+                if query_upper.startswith("SELECT") or query_upper.startswith("SHOW") or query_upper.startswith("DESCRIBE") or query_upper.startswith("EXPLAIN") or query_upper.startswith("\\d") or query_upper.startswith("WITH"):
                     # 执行查询并返回结果
                     cursor.execute(query, params or {})
                     result = cursor.fetchall()
@@ -80,7 +80,7 @@ class PostgreSQLConnection(DatabaseConnection):
                     }
                 else:
                     # 非SELECT查询，不允许执行
-                    raise Exception("仅允许执行SELECT、SHOW、DESCRIBE、EXPLAIN和\\d查询")
+                    raise Exception("仅允许执行SELECT、SHOW、DESCRIBE、EXPLAIN、\\d和WITH查询")
         
         except Exception as e:
             logger.error(f"执行PostgreSQL查询失败: {str(e)}")
