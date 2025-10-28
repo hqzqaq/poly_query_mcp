@@ -13,6 +13,8 @@ from dotenv import load_dotenv
 from .config import AppConfig
 from .enhanced_config import EnhancedAppConfig
 
+# 设置日志级别为DEBUG
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
@@ -20,7 +22,14 @@ class EnhancedConfigManager:
     """增强版配置管理器"""
     
     def __init__(self, config_file: Optional[str] = None):
-        self.config_file = config_file or os.path.join(os.path.dirname(__file__), "config.json")
+        # 如果没有提供配置文件路径，使用项目根目录下的config.json
+        if config_file is None:
+            # 获取项目根目录（src/poly_query_mcp/utils的上级目录的上级目录）
+            project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+            self.config_file = os.path.join(project_root, "config.json")
+        else:
+            self.config_file = config_file
+            
         self.enhanced_config_file = os.path.join(
             os.path.dirname(self.config_file), 
             "config.enhanced.json"
@@ -30,6 +39,7 @@ class EnhancedConfigManager:
         self.load_config()
     
     def load_config(self, 
+                   config_file: Optional[str] = None,
                    profile: Optional[str] = None, 
                    environment: Optional[str] = None,
                    databases: Optional[List[str]] = None,
@@ -39,20 +49,35 @@ class EnhancedConfigManager:
             # 首先加载环境变量
             load_dotenv()
             
-            # 检查增强版配置文件是否存在
-            if os.path.exists(self.enhanced_config_file):
-                self._load_enhanced_config(profile, environment, databases, config_overrides)
-                self.use_enhanced = True
-                logger.info(f"使用增强版配置文件: {self.enhanced_config_file}")
-            elif os.path.exists(self.config_file):
-                self._load_legacy_config(config_overrides)
-                self.use_enhanced = False
-                logger.info(f"使用传统配置文件: {self.config_file}")
+            # 如果提供了配置文件，使用指定的文件
+            if config_file:
+                self.config_file = config_file
+                # 检查是否是增强版配置文件
+                if config_file.endswith('.enhanced.json'):
+                    self.enhanced_config_file = config_file
+                    self._load_enhanced_config(profile, environment, databases, config_overrides)
+                    self.use_enhanced = True
+                    logger.info(f"使用指定的增强版配置文件: {config_file}")
+                else:
+                    self._load_legacy_config(config_overrides)
+                    self.use_enhanced = False
+                    logger.info(f"使用指定的传统配置文件: {config_file}")
             else:
-                logger.warning(f"配置文件不存在，使用默认配置")
-                self.config = self._get_default_config()
-                self.use_enhanced = False
-                self.save_config()  # 保存默认配置
+                # 自动检测配置文件
+                # 检查增强版配置文件是否存在
+                if os.path.exists(self.enhanced_config_file):
+                    self._load_enhanced_config(profile, environment, databases, config_overrides)
+                    self.use_enhanced = True
+                    logger.info(f"使用增强版配置文件: {self.enhanced_config_file}")
+                elif os.path.exists(self.config_file):
+                    self._load_legacy_config(config_overrides)
+                    self.use_enhanced = False
+                    logger.info(f"使用传统配置文件: {self.config_file}")
+                else:
+                    logger.warning(f"配置文件不存在，使用默认配置")
+                    self.config = self._get_default_config()
+                    self.use_enhanced = False
+                    self.save_config()  # 保存默认配置
         
         except Exception as e:
             logger.error(f"加载配置文件失败: {str(e)}")
@@ -97,11 +122,16 @@ class EnhancedConfigManager:
     def _load_legacy_config(self, config_overrides: Optional[Dict[str, Any]] = None) -> None:
         """加载传统配置"""
         # 加载配置文件
+        logger.info(f"正在加载配置文件: {self.config_file}")
         with open(self.config_file, 'r', encoding='utf-8') as f:
             config_data = json.load(f)
         
+        logger.info(f"配置文件内容: {config_data}")
+        
         # 使用AppConfig加载配置
         self.config = AppConfig.load_from_dict(config_data)
+        
+        logger.info(f"加载后的配置: {self.config.to_dict()}")
         
         # 应用配置覆盖
         if config_overrides:
@@ -352,6 +382,7 @@ def parse_config_args(args: Optional[List[str]] = None) -> Dict[str, Any]:
     
     # 配置相关参数
     parser.add_argument('--config', type=str, help='配置文件路径')
+    parser.add_argument('--config-enhanced', type=str, help='增强型配置文件路径')
     parser.add_argument('--profile', type=str, help='配置文件名称')
     parser.add_argument('--environment', type=str, help='环境名称')
     parser.add_argument('--databases', type=str, help='启用的数据库列表，用逗号分隔')
@@ -469,6 +500,7 @@ def parse_config_args(args: Optional[List[str]] = None) -> Dict[str, Any]:
     
     return {
         "config_file": parsed_args.config,
+        "config_enhanced": parsed_args.config_enhanced,
         "profile": parsed_args.profile,
         "environment": parsed_args.environment,
         "databases": databases,

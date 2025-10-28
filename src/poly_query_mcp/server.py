@@ -102,7 +102,7 @@ async def handle_list_tools() -> List[Tool]:
         ),
         Tool(
             name="query_postgresql",
-            description="查询PostgreSQL数据库",
+            description="查询PostgreSQL数据库，应该优先使用配置的pg_scheme",
             inputSchema={
                 "type": "object",
                 "properties": {
@@ -336,15 +336,38 @@ async def main():
     
     # 创建配置管理器
     global config_manager
-    config_manager = EnhancedConfigManager(config_args.get("config_file"))
+    config_manager = EnhancedConfigManager()
     
     # 加载配置
     config_manager.load_config(
+        config_file=config_args.get("config_file"),
         profile=config_args.get("profile"),
         environment=config_args.get("environment"),
         databases=config_args.get("databases"),
         config_overrides=config_args.get("config_overrides")
     )
+    
+    # 如果指定了增强型配置文件，则加载并合并配置
+    if config_args.get("config_enhanced"):
+        from .utils.database_config_manager import DatabaseConfigManager
+        db_config_manager = DatabaseConfigManager()
+        
+        # 获取命令行参数
+        import sys
+        command_line_args = sys.argv[1:]
+        
+        # 加载并合并配置
+        final_config = db_config_manager.load_and_merge_config(
+            command_line_args=command_line_args,
+            normal_config_file=config_args.get("config_file"),
+            enhanced_config_file=config_args.get("config_enhanced"),
+            environment=config_args.get("environment")
+        )
+        
+        # 更新配置
+        config_dict = config_manager.get_config().model_dump()
+        merged_config_dict = {**config_dict, **final_config}
+        config_manager.config = AppConfig.load_from_dict(merged_config_dict)
     
     # 打印配置信息
     config = config_manager.get_config()
