@@ -67,8 +67,8 @@ uvx poly-query-mcp
 python main.py
 ```
 
-在Claude Desktop中使用：
-1. 在Claude Desktop的配置文件中添加此MCP服务器（参考下面完整的mcp的数据库配置）：
+mcp接入使用：
+1. 在支持mcp client中（如Claude Desktop）的配置文件中添加此MCP服务器（参考下面完整的mcp的数据库配置）：
 
 ```json
 {
@@ -88,8 +88,8 @@ python main.py
 }
 ```
 
-2. 重启Claude Desktop
-3. 在对话中使用数据库查询功能
+1. 重启mcp服务
+2. 在对话中使用数据库查询功能
 
 更多安装和配置选项请参考 [uv安装指南](docs/UV_INSTALLATION.md)
 
@@ -97,7 +97,41 @@ python main.py
 
 Poly Query MCP 支持多种配置方式，包括传统配置文件、增强配置文件和环境变量。您可以根据需要选择最适合的配置方式。
 
-### 1. 传统配置文件
+### 1. 直接传入数据库参数
+```json
+{
+  "mcpServers": {
+    "poly-query-mcp": {
+      "command": "uvx",
+      "args": [
+        "poly-query-mcp",
+        "--mysql-host", "localhost",
+        "--mysql-port", "3306",
+        "--mysql-user", "root",
+        "--mysql-password", "password",
+        "--mysql-database", "mysql_database",
+        "--postgresql-host", "localhost",
+        "--postgresql-port", "5432",
+        "--postgresql-user", "postgres",
+        "--postgresql-password", "password",
+        "--postgresql-database", "postgresql_database",
+        "--redis-host", "localhost",
+        "--redis-port", "6379",
+        "--redis-db", "0",
+        "--redis-password", "redis_password",
+        "--mongodb-host", "localhost",
+        "--mongodb-port", "27017",
+        "--mongodb-username", "dev_user",
+        "--mongodb-password", "dev_mongodb_password",
+        "--mongodb-database", "test"
+      ]
+    }
+  }
+}
+```
+
+
+### 2. 传统配置文件
 
 创建一个 `config.json` 文件，包含所有数据库的连接信息：
 
@@ -135,7 +169,23 @@ Poly Query MCP 支持多种配置方式，包括传统配置文件、增强配�
 }
 ```
 
-### 2. 增强配置文件（推荐）
+mcp 配置为：
+```json
+{
+  "mcpServers": {
+    "poly-query-mcp": {
+      "command": "uvx",
+      "args": [
+        "poly-query-mcp",
+        "--config",
+        "/path/to/config.json",
+      ]
+    }
+  }
+}
+```
+
+### 3. 增强配置文件（推荐）
 
 增强配置文件支持多环境配置和配置文件，适合复杂的部署场景。创建 `config.enhanced.json` 文件：
 
@@ -229,39 +279,24 @@ Poly Query MCP 支持多种配置方式，包括传统配置文件、增强配�
 }
 ```
 
-### 3. 环境变量配置
-
-您也可以使用环境变量来配置数据库连接，这对于容器化部署特别有用：
-
-```bash
-# MySQL配置
-export MYSQL_HOST=localhost
-export MYSQL_PORT=3306
-export MYSQL_USER=root
-export MYSQL_PASSWORD=your_mysql_password
-export MYSQL_DATABASE=your_mysql_database
-
-# PostgreSQL配置
-export POSTGRESQL_HOST=localhost
-export POSTGRESQL_PORT=5432
-export POSTGRESQL_USER=postgres
-export POSTGRESQL_PASSWORD=your_postgresql_password
-export POSTGRESQL_DATABASE=your_postgresql_database
-export POSTGRESQL_SCHEMA=public
-
-# Redis配置
-export REDIS_HOST=localhost
-export REDIS_PORT=6379
-export REDIS_PASSWORD=your_redis_password
-export REDIS_DB=0
-
-# MongoDB配置
-export MONGODB_HOST=localhost
-export MONGODB_PORT=27017
-export MONGODB_USERNAME=your_mongodb_username
-export MONGODB_PASSWORD=your_mongodb_password
-export MONGODB_DATABASE=your_mongodb_database
+mcp的配置为：
+```json
+{
+  "mcpServers": {
+    "poly-query-mcp": {
+      "command": "uvx",
+      "args": [
+        "poly-query-mcp",
+        "--config-enhanced",
+        "/path/to/config.enhanced.json",
+        "--environment",
+        "development"
+      ]
+    }
+  }
+}
 ```
+
 
 ### 4. 数据库配置详解
 
@@ -342,45 +377,7 @@ export MONGODB_DATABASE=your_mongodb_database
 - 对于生产环境，建议配置副本集以提高可用性
 - 考虑使用索引优化查询性能
 
-### 5. 配置使用方式
-
-#### 使用传统配置文件
-
-```bash
-# 启动MCP服务器，使用默认的config.json文件
-python main.py
-
-# 或者指定配置文件
-python main.py --config /path/to/your/config.json
-```
-
-#### 使用增强配置文件
-
-```bash
-# 使用特定环境
-python main.py --environment production
-
-# 使用特定配置文件
-python main.py --profile staging
-
-# 仅启用特定数据库
-python main.py --databases mysql,redis
-```
-
-#### 使用命令行覆盖配置
-
-```bash
-# 覆盖MySQL主机
-python main.py --mysql-host production-mysql.example.com
-
-# 覆盖多个数据库配置
-python main.py \
-  --mysql-host production-mysql.example.com \
-  --postgresql-host production-postgresql.example.com \
-  --redis-host production-redis.example.com
-```
-
-### 6. 安全注意事项
+### 5. 安全注意事项
 
 1. **密码保护**：
    - 不要在代码中硬编码密码
@@ -397,268 +394,7 @@ python main.py \
    - 仅授予必要的最小权限
    - 定期轮换数据库密码
 
-### 7. MCP接入配置
-
-Poly Query MCP 可以通过多种方式接入到 Claude Desktop 或其他支持 MCP 协议的应用中。以下是不同数据库配置方式的 MCP 接入示例。
-
-#### 7.1 使用传统配置文件接入
-
-创建或编辑 Claude Desktop 的配置文件（通常位于 `~/Library/Application Support/Claude/claude_desktop_config.json`）：
-
-```json
-{
-  "mcpServers": {
-    "poly-query-mcp": {
-      "command": "uvx",
-      "args": [
-        "poly-query-mcp",
-        "--config", "~/.config/poly-query-mcp/config.json"
-      ]
-    }
-  }
-}
-```
-
-#### 7.2 使用增强配置文件接入
-
-##### 按环境配置接入
-
-```json
-{
-  "mcpServers": {
-    "poly-query-mcp-dev": {
-      "command": "uvx",
-      "args": [
-        "poly-query-mcp",
-        "--config",
-        "/path/to/poly_query_mcp/config.enhanced.json",
-        "--environment",
-        "development"
-      ]
-    },
-    "poly-query-mcp-prod": {
-      "command": "uvx",
-      "args": [
-        "poly-query-mcp",
-        "--config",
-        "/path/to/poly_query_mcp/config.enhanced.json",
-        "--environment",
-        "production"
-      ]
-    }
-  }
-}
-```
-
-##### 按配置文件接入
-
-```json
-{
-  "mcpServers": {
-    "poly-query-mcp-local": {
-      "command": "uvx",
-      "args": [
-        "poly-query-mcp",
-        "--config",
-        "/path/to/poly_query_mcp/config.enhanced.json",
-        "--profile",
-        "local"
-      ]
-    },
-    "poly-query-mcp-staging": {
-      "command": "uvx",
-      "args": [
-        "poly-query-mcp",
-        "--config",
-        "/path/to/poly_query_mcp/config.enhanced.json",
-        "--profile",
-        "staging"
-      ]
-    }
-  }
-}
-```
-
-##### 按数据库类型接入
-
-```json
-{
-  "mcpServers": {
-    "poly-query-mcp-mysql": {
-      "command": "uvx",
-      "args": [
-        "poly-query-mcp",
-        "--config",
-        "/path/to/poly_query_mcp/config.enhanced.json",
-        "--environment",
-        "development",
-        "--databases",
-        "mysql"
-      ]
-    },
-    "poly-query-mcp-nosql": {
-      "command": "uvx",
-      "args": [
-        "poly-query-mcp",
-        "--config",
-        "/path/to/poly_query_mcp/config.enhanced.json",
-        "--environment",
-        "development",
-        "--databases",
-        "redis,mongodb"
-      ]
-    }
-  }
-}
-```
-
-#### 7.3 使用命令行参数直接配置
-
-##### 完整数据库配置
-
-```json
-{
-  "mcpServers": {
-    "poly-query-mcp-full": {
-      "command": "uvx",
-      "args": [
-        "poly-query-mcp",
-        "--mysql-host", "localhost",
-        "--mysql-port", "3306",
-        "--mysql-user", "root",
-        "--mysql-password", "your_mysql_password",
-        "--mysql-database", "your_mysql_database",
-        "--postgresql-host", "localhost",
-        "--postgresql-port", "5432",
-        "--postgresql-user", "postgres",
-        "--postgresql-password", "your_postgresql_password",
-        "--postgresql-database", "your_postgresql_database",
-        "--redis-host", "localhost",
-        "--redis-port", "6379",
-        "--redis-db", "0",
-        "--redis-password", "your_redis_password",
-        "--mongodb-host", "localhost",
-        "--mongodb-port", "27017",
-        "--mongodb-username", "your_mongodb_username",
-        "--mongodb-password", "your_mongodb_password",
-        "--mongodb-database", "your_mongodb_database"
-      ]
-    }
-  }
-}
-```
-
-##### 单一数据库配置
-
-```json
-{
-  "mcpServers": {
-    "poly-query-mcp-mysql-only": {
-      "command": "uvx",
-      "args": [
-        "poly-query-mcp",
-        "--mysql-host", "your_mysql_host",
-        "--mysql-port", "3306",
-        "--mysql-user", "your_mysql_user",
-        "--mysql-password", "your_mysql_password",
-        "--mysql-database", "your_mysql_database"
-      ]
-    }
-  }
-}
-```
-
-#### 7.4 使用环境变量接入
-
-创建一个启动脚本，设置环境变量后启动 MCP 服务器：
-
-```bash
-#!/bin/bash
-# 启动脚本: start-poly-query-mcp.sh
-
-# 设置环境变量
-export MYSQL_HOST=localhost
-export MYSQL_PORT=3306
-export MYSQL_USER=root
-export MYSQL_PASSWORD=your_mysql_password
-export MYSQL_DATABASE=your_mysql_database
-
-export POSTGRESQL_HOST=localhost
-export POSTGRESQL_PORT=5432
-export POSTGRESQL_USER=postgres
-export POSTGRESQL_PASSWORD=your_postgresql_password
-export POSTGRESQL_DATABASE=your_postgresql_database
-
-export REDIS_HOST=localhost
-export REDIS_PORT=6379
-export REDIS_PASSWORD=your_redis_password
-export REDIS_DB=0
-
-export MONGODB_HOST=localhost
-export MONGODB_PORT=27017
-export MONGODB_USERNAME=your_mongodb_username
-export MONGODB_PASSWORD=your_mongodb_password
-export MONGODB_DATABASE=your_mongodb_database
-
-# 启动 MCP 服务器
-poly-query-mcp
-```
-
-然后在 Claude Desktop 配置中使用此脚本：
-
-```json
-{
-  "mcpServers": {
-    "poly-query-mcp-env": {
-      "command": "/path/to/start-poly-query-mcp.sh"
-    }
-  }
-}
-```
-
-#### 7.6 配置文件位置
-
-不同操作系统上的 Claude Desktop 配置文件位置：
-
-- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
-- **Linux**: `~/.config/claude/claude_desktop_config.json`
-
-#### 7.7 配置验证
-
-配置完成后，重启 Claude Desktop，然后可以通过以下方式验证配置是否成功：
-
-1. 在 Claude Desktop 中询问："可用的工具有哪些？"
-2. 检查是否包含 `query_mysql`、`query_postgresql`、`query_redis` 和 `query_mongodb` 工具
-3. 使用 `test_connection` 工具测试数据库连接
-
-#### 7.8 最佳实践
-
-1. **安全性**：
-   - 不要在配置文件中直接写入密码，使用环境变量或密钥管理服务
-   - 对于生产环境，考虑使用增强配置文件并设置适当的文件权限
-
-2. **性能优化**：
-   - 根据实际需求选择启用必要的数据库，避免不必要的资源消耗
-   - 对于高并发场景，考虑使用连接池配置
-
-3. **维护性**：
-   - 为不同环境创建不同的 MCP 服务器配置，便于切换
-   - 使用描述性的服务器名称，便于识别和管理
-
 ### 8. 故障排除
-
-#### 连接测试
-
-使用内置的连接测试工具验证数据库配置：
-
-```bash
-# 在Claude Desktop中执行
-test_connection --db_type mysql
-test_connection --db_type postgresql
-test_connection --db_type redis
-test_connection --db_type mongodb
-```
 
 #### 常见问题
 

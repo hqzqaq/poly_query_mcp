@@ -3,8 +3,6 @@
     "poly-query-mcp-local": {
       "command": "uvx",
       "args": [
-        "--from",
-        "/Users/hqzqaq/project/python/poly_query_mcp",
         "poly-query-mcp",
         "--mysql-host", "localhost",
         "--mysql-port", "3306",

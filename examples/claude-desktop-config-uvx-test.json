@@ -4,9 +4,9 @@
       "command": "uvx",
       "args": [
         "--from",
-        "/Users/hqzqaq/project/python/poly_query_mcp",
+        "/path/to/poly_query_mcp",
         "python",
-        "main.py",
+        "/path/to/poly_query_mcp/main.py",
         "--mysql-host", "10.9.20.77",
         "--mysql-port", "13306",
         "--mysql-user", "moss",

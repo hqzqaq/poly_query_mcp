@@ -3,13 +3,11 @@
     "poly-query-mcp-local": {
       "command": "uvx",
       "args": [
-        "--from",
-        "/Users/hqzqaq/project/python/poly_query_mcp",
         "poly-query-mcp",
-        "--config",
+        "--config-enhanced",
         "/Users/hqzqaq/project/python/poly_query_mcp/config.enhanced.json",
-        "--profile",
-        "local"
+        "--environment",
+        "development"
       ]
     }
   }
