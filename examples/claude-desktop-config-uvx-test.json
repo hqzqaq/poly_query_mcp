@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "poly-query-mcp-local": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "/Users/hqzqaq/project/python/poly_query_mcp",
+        "python",
+        "main.py",
+        "--mysql-host", "10.9.20.77",
+        "--mysql-port", "13306",
+        "--mysql-user", "moss",
+        "--mysql-password", "K3wqCbhj%she",
+        "--mysql-database", "moss"
+      ]
+    }
+  }
+}
