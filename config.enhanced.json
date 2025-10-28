@@ -14,7 +14,7 @@
         "user": "postgres",
         "password": "dev_postgresql_password",
         "database": "dev_db",
-        "schema": "public"
+        "pg_schema": "public"
       },
       "redis": {
         "host": "localhost",
@@ -44,7 +44,7 @@
         "user": "app_user",
         "password": "${POSTGRESQL_PROD_PASSWORD}",
         "database": "production_db",
-        "schema": "public"
+        "pg_schema": "public"
       },
       "redis": {
         "host": "prod-redis.example.com",

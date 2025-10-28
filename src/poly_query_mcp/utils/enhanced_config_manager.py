@@ -226,7 +226,7 @@ class EnhancedConfigManager:
                 "user": os.getenv("POSTGRESQL_USER", "postgres"),
                 "password": os.getenv("POSTGRESQL_PASSWORD", ""),
                 "database": os.getenv("POSTGRESQL_DATABASE", ""),
-                "schema": os.getenv("POSTGRESQL_SCHEMA", "public")
+                "pg_schema": os.getenv("POSTGRESQL_SCHEMA", "public")
             },
             redis={
                 "host": os.getenv("REDIS_HOST", "localhost"),
@@ -262,7 +262,7 @@ class EnhancedConfigManager:
                         "user": "postgres",
                         "password": "dev_postgresql_password",
                         "database": "dev_db",
-                        "schema": "public"
+                        "pg_schema": "public"
                     },
                         "redis": {
                             "host": "localhost",
@@ -292,7 +292,7 @@ class EnhancedConfigManager:
                         "user": "app_user",
                         "password": "${POSTGRESQL_PROD_PASSWORD}",
                         "database": "production_db",
-                        "schema": "public"
+                        "pg_schema": "public"
                     },
                         "redis": {
                             "host": "prod-redis.example.com",
@@ -427,7 +427,7 @@ def parse_config_args(args: Optional[List[str]] = None) -> Dict[str, Any]:
     if parsed_args.postgresql_database:
         postgresql_overrides["database"] = parsed_args.postgresql_database
     if parsed_args.postgresql_schema:
-        postgresql_overrides["schema"] = parsed_args.postgresql_schema
+        postgresql_overrides["pg_schema"] = parsed_args.postgresql_schema
     
     if postgresql_overrides:
         config_overrides["postgresql"] = postgresql_overrides

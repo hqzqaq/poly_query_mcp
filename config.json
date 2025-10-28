@@ -7,12 +7,12 @@
     "database": "your_mysql_database"
   },
   "postgresql": {
-    "host": "localhost",
-    "port": 5432,
-    "user": "postgres",
-    "password": "your_postgresql_password",
-    "database": "your_postgresql_database",
-    "schema": "public"
+    "host": "10.1.203.111",
+    "port": 17700,
+    "user": "jl_dev",
+    "password": "kc4T8Rf0C#rwm0121D",
+    "database": "jl_dev",
+    "pg_schema": "jl_dev"
   },
   "redis": {
     "host": "localhost",

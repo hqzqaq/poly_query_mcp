@@ -51,7 +51,7 @@ pip install -r requirements.txt
 
 1. 复制示例配置文件
 ```bash
-cp config.example.json config.json
+cp config.json config.json
 ```
 
 2. 编辑配置文件，添加您的数据库连接信息
@@ -117,7 +117,7 @@ Poly Query MCP 支持多种配置方式，包括传统配置文件、增强配�
     "user": "postgres",
     "password": "your_postgresql_password",
     "database": "your_postgresql_database",
-    "schema": "public"
+    "pg_schema": "public"
   },
   "redis": {
     "host": "localhost",
@@ -157,7 +157,7 @@ Poly Query MCP 支持多种配置方式，包括传统配置文件、增强配�
         "user": "postgres",
         "password": "dev_postgresql_password",
         "database": "dev_db",
-        "schema": "public"
+        "pg_schema": "public"
       },
       "redis": {
         "host": "localhost",
@@ -188,7 +188,7 @@ Poly Query MCP 支持多种配置方式，包括传统配置文件、增强配�
         "user": "app_user",
         "password": "${POSTGRESQL_PROD_PASSWORD}",
         "database": "production_db",
-        "schema": "public"
+        "pg_schema": "public"
       },
       "redis": {
         "host": "prod-redis.example.com",
@@ -294,7 +294,7 @@ export MONGODB_DATABASE=your_mongodb_database
 | user | string | 是 | - | PostgreSQL用户名 |
 | password | string | 是 | - | PostgreSQL密码 |
 | database | string | 是 | - | PostgreSQL数据库名 |
-| schema | string | 否 | public | PostgreSQL模式名 |
+| pg_schema | string | 否 | public | PostgreSQL模式名 |
 
 **使用场景**：
 - 适用于需要复杂查询和数据分析的场景
@@ -303,7 +303,7 @@ export MONGODB_DATABASE=your_mongodb_database
 **注意事项**：
 - 确保PostgreSQL用户有足够的权限访问指定的数据库和模式
 - 对于生产环境，建议配置连接池以优化性能
-- 可以通过schema参数实现多租户隔离
+- 可以通过pg_schema参数实现多租户隔离
 
 #### Redis 配置
 

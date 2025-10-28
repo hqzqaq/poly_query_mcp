@@ -44,7 +44,7 @@ pip install -r requirements.txt
 
 1. 复制示例配置文件：
    ```bash
-   cp config.example.json config.json
+   cp config.json config.json
    ```
 
 2. 编辑 `config.json` 文件，添加您的数据库连接信息：

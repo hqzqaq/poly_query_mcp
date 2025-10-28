@@ -125,7 +125,7 @@ Poly Query MCP提供了以下工具：
 | database | string | - | 数据库名称 |
 | username | string | - | 用户名 |
 | password | string | - | 密码 |
-| schema | string | public | 数据库模式名称 |
+| pg_schema | string | public | 数据库模式名称 |
 
 #### Schema配置说明
 
@@ -140,7 +140,7 @@ PostgreSQL支持多个schema（模式），默认使用public schema。您可以
     "database": "mydb",
     "username": "user",
     "password": "pass",
-    "schema": "custom_schema"
+    "pg_schema": "custom_schema"
   }
 }
 ```

@@ -19,7 +19,7 @@ class PostgreSQLConnection(DatabaseConnection):
         """连接PostgreSQL数据库"""
         try:
             # 获取schema，默认为public
-            schema = self.config.get("schema", "public")
+            schema = self.config.get("pg_schema", "public")
             
             self.connection = psycopg2.connect(
                 host=self.config.get("host"),
