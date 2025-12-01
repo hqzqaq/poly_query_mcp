@@ -134,7 +134,7 @@ MCP配置示例:
 
 def print_version():
     """打印版本信息"""
-    print("Poly Query MCP v1.0.0")
+    print("Poly Query MCP v1.0.6")
 
 def print_config_info(passed_args=None):
     """打印当前配置信息"""
