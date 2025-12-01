@@ -81,6 +81,16 @@ def get_connection(db_type: str, config: DatabaseConfig) -> DatabaseConnection:
 @server.list_tools()
 async def handle_list_tools() -> List[Tool]:
     """列出可用工具"""
+    # 获取当前配置的PostgreSQL schema
+    postgresql_schema = "public"
+    if config_manager:
+        try:
+            config = config_manager.get_config()
+            if config and config.postgresql and config.postgresql.pg_schema:
+                postgresql_schema = config.postgresql.pg_schema
+        except Exception as e:
+            logger.error(f"获取PostgreSQL配置失败: {str(e)}")
+    
     return [
         Tool(
             name="query_mysql",
@@ -102,7 +112,7 @@ async def handle_list_tools() -> List[Tool]:
         ),
         Tool(
             name="query_postgresql",
-            description="查询PostgreSQL数据库，应该优先使用配置的pg_scheme",
+            description=f"查询PostgreSQL数据库，应该优先使用配置的schema: {postgresql_schema}",
             inputSchema={
                 "type": "object",
                 "properties": {
